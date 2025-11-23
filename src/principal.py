@@ -16,6 +16,7 @@ ctrl_localizacao = Controller_Localizacao()
 ctrl_movimentacao = Controller_Movimentacao()
 
 def reports(opcao_relatorio:int=0):
+    """Função para chamar os relatórios do MongoDB"""
     if opcao_relatorio == 1:
         relatorio.get_relatorio_produtos_abaixo_minimo()            
     elif opcao_relatorio == 2:
@@ -30,6 +31,7 @@ def reports(opcao_relatorio:int=0):
         relatorio.get_relatorio_fornecedores()
 
 def inserir(opcao_inserir:int=0):
+    """Função para inserir novos registros no MongoDB"""
     if opcao_inserir == 1:                               
         novo_produto = ctrl_produto.inserir_produto()
     elif opcao_inserir == 2:
@@ -42,6 +44,7 @@ def inserir(opcao_inserir:int=0):
         nova_movimentacao = ctrl_movimentacao.inserir_movimentacao()
 
 def atualizar(opcao_atualizar:int=0):
+    """Função para atualizar registros existentes no MongoDB"""
     if opcao_atualizar == 1:
         relatorio.get_relatorio_produtos()
         produto_atualizado = ctrl_produto.atualizar_produto()
@@ -62,6 +65,7 @@ def atualizar(opcao_atualizar:int=0):
         movimentacao_atualizada = ctrl_movimentacao.atualizar_movimentacao()
 
 def excluir(opcao_excluir:int=0):
+    """Função para excluir registros do MongoDB"""
     if opcao_excluir == 1:
         relatorio.get_relatorio_produtos()
         ctrl_produto.excluir_produto()
@@ -82,6 +86,7 @@ def excluir(opcao_excluir:int=0):
         ctrl_movimentacao.excluir_movimentacao()
 
 def movimentar_estoque():
+    """Função para movimentar o estoque"""
     while True:
         print(config.MENU_MOVIMENTACAO)
         opcao = int(input("Escolha uma opção [0-2]: "))
@@ -97,6 +102,7 @@ def movimentar_estoque():
         config.clear_console()
 
 def run():
+    """Função principal para execução do menu"""
     print(tela_inicial.get_updated_screen())
     config.clear_console()
 
@@ -105,7 +111,7 @@ def run():
         opcao = int(input("Escolha uma opção [1-6]: "))
         config.clear_console(1)
         
-        if opcao == 1: # Relatórios
+        if opcao == 1:
             print(config.MENU_RELATORIOS)
             opcao_relatorio = int(input("Escolha uma opção [0-6]: "))
             config.clear_console(1)
@@ -116,7 +122,7 @@ def run():
             reports(opcao_relatorio)
             config.clear_console(1)
 
-        elif opcao == 2: # Inserir Novos Registros
+        elif opcao == 2:
             print(config.MENU_ENTIDADES)
             opcao_inserir = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
@@ -129,7 +135,7 @@ def run():
             print(tela_inicial.get_updated_screen())
             config.clear_console()
 
-        elif opcao == 3: # Atualizar Registros
+        elif opcao == 3:
             print(config.MENU_ENTIDADES)
             opcao_atualizar = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
@@ -140,7 +146,7 @@ def run():
             atualizar(opcao_atualizar=opcao_atualizar)
             config.clear_console()
 
-        elif opcao == 4: # Excluir Registros
+        elif opcao == 4:
             print(config.MENU_ENTIDADES)
             opcao_excluir = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
@@ -153,13 +159,13 @@ def run():
             print(tela_inicial.get_updated_screen())
             config.clear_console()
 
-        elif opcao == 5: # Movimentar Estoque
+        elif opcao == 5:
             movimentar_estoque()
             config.clear_console()
             print(tela_inicial.get_updated_screen())
             config.clear_console()
 
-        elif opcao == 6: # Sair
+        elif opcao == 6:
             print(tela_inicial.get_updated_screen())
             config.clear_console()
             print("Obrigado por utilizar o nosso sistema.")
@@ -171,3 +177,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+

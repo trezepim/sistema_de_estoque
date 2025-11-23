@@ -7,7 +7,6 @@ class MongoDBConnection:
         self.port = 27017
         self.database_name = "labdatabase"
 
-        # Lê usuário e senha do arquivo (mesmo padrão do seu projeto atual)
         try:
             with open("conexion/passphrase/authentication.mongo", "r") as f:
                 self.user, self.passwd = f.read().split(',')
@@ -29,7 +28,7 @@ class MongoDBConnection:
 
         self.client = MongoClient(uri)
         self.db = self.client[self.database_name]
-        return self.db  # retorna o banco para ser usado nos models
+        return self.db
 
     def close(self):
         if self.client:

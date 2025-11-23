@@ -1,3 +1,5 @@
+from conexion.mongodb_connection import MongoDBConnection
+
 MENU_PRINCIPAL = """Menu Principal
 1 - Relatórios
 2 - Inserir Registros
@@ -32,8 +34,14 @@ MENU_MOVIMENTACAO = """Movimentação de Estoque
 0 - Sair
 """
 
-# Consulta de contagem de registros por tabela
-QUERY_COUNT = 'select count(1) as total_{tabela} from {tabela}'
+def count_documents(collection_name: str) -> int:
+    """Conta o número de documentos em uma coleção no MongoDB"""
+    conn = MongoDBConnection()
+    db = conn.connect()
+    collection = db[collection_name]
+    total = collection.count_documents({})
+    conn.close()
+    return total
 
 def clear_console(wait_time:int=3):
     '''
@@ -44,3 +52,4 @@ def clear_console(wait_time:int=3):
     from time import sleep
     sleep(wait_time)
     os.system("clear")
+
