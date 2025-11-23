@@ -85,6 +85,6 @@ class Controller_Fornecedor:
             print(f"O CNPJ {cnpj} não existe.")
 
     def verifica_existencia_fornecedor(self, oracle:OracleQueries, cnpj:str=None) -> bool:
-        # Recupera os dados do novo fornecedor criado transformando em um DataFrame
-        df_fornecedor = oracle.sqlToDataFrame(f"select cnpj, razao_social, nome_fantasia from fornecedores where cnpj = {cnpj}")
-        return df_fornecedor.empty
+        '''Verifica se um fornecedor existe no banco de dados'''
+        df_fornecedor = oracle.sqlToDataFrame(f"select cnpj from fornecedores where cnpj = '{cnpj}'")
+        return not df_fornecedor.empty # Retorna True se o fornecedor existe

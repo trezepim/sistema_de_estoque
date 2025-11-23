@@ -2,82 +2,99 @@ from utils import config
 from utils.splash_screen import SplashScreen
 from reports.relatorios import Relatorio
 from controller.controller_produto import Controller_Produto
-from controller.controller_cliente import Controller_Cliente
 from controller.controller_fornecedor import Controller_Fornecedor
-from controller.controller_pedido import Controller_Pedido
-from controller.controller_item_pedido import Controller_Item_Pedido
+from controller.controller_categoria import Controller_Categoria
+from controller.controller_localizacao import Controller_Localizacao
+from controller.controller_movimentacao import Controller_Movimentacao
 
 tela_inicial = SplashScreen()
 relatorio = Relatorio()
 ctrl_produto = Controller_Produto()
-ctrl_cliente = Controller_Cliente()
 ctrl_fornecedor = Controller_Fornecedor()
-ctrl_pedido = Controller_Pedido()
-ctrl_item_pedido = Controller_Item_Pedido()
+ctrl_categoria = Controller_Categoria()
+ctrl_localizacao = Controller_Localizacao()
+ctrl_movimentacao = Controller_Movimentacao()
 
 def reports(opcao_relatorio:int=0):
-
     if opcao_relatorio == 1:
-        relatorio.get_relatorio_pedidos_por_fornecedor()            
+        relatorio.get_relatorio_produtos_abaixo_minimo()            
     elif opcao_relatorio == 2:
-        relatorio.get_relatorio_pedidos()
+        relatorio.get_relatorio_produtos_por_categoria()
     elif opcao_relatorio == 3:
-        relatorio.get_relatorio_produtos()
+        relatorio.get_relatorio_movimentacoes_periodo()
     elif opcao_relatorio == 4:
-        relatorio.get_relatorio_clientes()
+        relatorio.get_relatorio_posicao_estoque()
     elif opcao_relatorio == 5:
-        relatorio.get_relatorio_fornecedores()
+        relatorio.get_relatorio_produtos()
     elif opcao_relatorio == 6:
-        relatorio.get_relatorio_itens_pedidos()
+        relatorio.get_relatorio_fornecedores()
 
 def inserir(opcao_inserir:int=0):
-
     if opcao_inserir == 1:                               
         novo_produto = ctrl_produto.inserir_produto()
     elif opcao_inserir == 2:
-        novo_cliente = ctrl_cliente.inserir_cliente()
+        nova_categoria = ctrl_categoria.inserir_categoria()
     elif opcao_inserir == 3:
         novo_fornecedor = ctrl_fornecedor.inserir_fornecedor()
     elif opcao_inserir == 4:
-        novo_pedido = ctrl_pedido.inserir_pedido()
+        nova_localizacao = ctrl_localizacao.inserir_localizacao()
     elif opcao_inserir == 5:
-        novo_item_pedido = ctrl_item_pedido.inserir_item_pedido()
+        nova_movimentacao = ctrl_movimentacao.inserir_movimentacao()
 
 def atualizar(opcao_atualizar:int=0):
-
     if opcao_atualizar == 1:
         relatorio.get_relatorio_produtos()
         produto_atualizado = ctrl_produto.atualizar_produto()
     elif opcao_atualizar == 2:
-        relatorio.get_relatorio_clientes()
-        cliente_atualizado = ctrl_cliente.atualizar_cliente()
+        print("\nCategorias disponíveis:")
+        relatorio.get_relatorio_produtos_por_categoria()
+        categoria_atualizada = ctrl_categoria.atualizar_categoria()
     elif opcao_atualizar == 3:
         relatorio.get_relatorio_fornecedores()
         fornecedor_atualizado = ctrl_fornecedor.atualizar_fornecedor()
     elif opcao_atualizar == 4:
-        relatorio.get_relatorio_pedidos()
-        pedido_atualizado = ctrl_pedido.atualizar_pedido()
+        print("\nLocalizações no relatório de produtos:")
+        relatorio.get_relatorio_produtos()
+        localizacao_atualizada = ctrl_localizacao.atualizar_localizacao()
     elif opcao_atualizar == 5:
-        relatorio.get_relatorio_itens_pedidos()
-        item_pedido_atualizado = ctrl_item_pedido.atualizar_item_pedido()
+        print("\nMovimentações por período:")
+        relatorio.get_relatorio_movimentacoes_periodo()
+        movimentacao_atualizada = ctrl_movimentacao.atualizar_movimentacao()
 
 def excluir(opcao_excluir:int=0):
-
     if opcao_excluir == 1:
         relatorio.get_relatorio_produtos()
         ctrl_produto.excluir_produto()
     elif opcao_excluir == 2:                
-        relatorio.get_relatorio_clientes()
-        ctrl_cliente.excluir_cliente()
+        print("\nCategorias disponíveis:")
+        relatorio.get_relatorio_produtos_por_categoria()
+        ctrl_categoria.excluir_categoria()
     elif opcao_excluir == 3:                
         relatorio.get_relatorio_fornecedores()
         ctrl_fornecedor.excluir_fornecedor()
     elif opcao_excluir == 4:                
-        relatorio.get_relatorio_pedidos()
-        ctrl_pedido.excluir_pedido()
+        print("\nLocalizações no relatório de produtos:")
+        relatorio.get_relatorio_produtos()
+        ctrl_localizacao.excluir_localizacao()
     elif opcao_excluir == 5:
-        relatorio.get_relatorio_itens_pedidos()
-        ctrl_item_pedido.excluir_item_pedido()
+        print("\nMovimentações por período:")
+        relatorio.get_relatorio_movimentacoes_periodo()
+        ctrl_movimentacao.excluir_movimentacao()
+
+def movimentar_estoque():
+    while True:
+        print(config.MENU_MOVIMENTACAO)
+        opcao = int(input("Escolha uma opção [0-2]: "))
+        config.clear_console(1)
+        
+        if opcao == 1:
+            ctrl_movimentacao.registrar_entrada()
+        elif opcao == 2:
+            ctrl_movimentacao.registrar_saida()
+        elif opcao == 0:
+            break
+        
+        config.clear_console()
 
 def run():
     print(tela_inicial.get_updated_screen())
@@ -85,63 +102,72 @@ def run():
 
     while True:
         print(config.MENU_PRINCIPAL)
-        opcao = int(input("Escolha uma opção [1-5]: "))
+        opcao = int(input("Escolha uma opção [1-6]: "))
         config.clear_console(1)
         
         if opcao == 1: # Relatórios
-            
             print(config.MENU_RELATORIOS)
             opcao_relatorio = int(input("Escolha uma opção [0-6]: "))
             config.clear_console(1)
 
+            if opcao_relatorio == 0:
+                continue
+                
             reports(opcao_relatorio)
-
             config.clear_console(1)
 
         elif opcao == 2: # Inserir Novos Registros
-            
             print(config.MENU_ENTIDADES)
-            opcao_inserir = int(input("Escolha uma opção [1-5]: "))
+            opcao_inserir = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
 
+            if opcao_inserir == 0:
+                continue
+                
             inserir(opcao_inserir=opcao_inserir)
-
             config.clear_console()
             print(tela_inicial.get_updated_screen())
             config.clear_console()
 
         elif opcao == 3: # Atualizar Registros
-
             print(config.MENU_ENTIDADES)
-            opcao_atualizar = int(input("Escolha uma opção [1-5]: "))
+            opcao_atualizar = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
 
+            if opcao_atualizar == 0:
+                continue
+                
             atualizar(opcao_atualizar=opcao_atualizar)
-
             config.clear_console()
 
-        elif opcao == 4:
-
+        elif opcao == 4: # Excluir Registros
             print(config.MENU_ENTIDADES)
-            opcao_excluir = int(input("Escolha uma opção [1-5]: "))
+            opcao_excluir = int(input("Escolha uma opção [0-5]: "))
             config.clear_console(1)
 
+            if opcao_excluir == 0:
+                continue
+                
             excluir(opcao_excluir=opcao_excluir)
-
             config.clear_console()
             print(tela_inicial.get_updated_screen())
             config.clear_console()
 
-        elif opcao == 5:
+        elif opcao == 5: # Movimentar Estoque
+            movimentar_estoque()
+            config.clear_console()
+            print(tela_inicial.get_updated_screen())
+            config.clear_console()
 
+        elif opcao == 6: # Sair
             print(tela_inicial.get_updated_screen())
             config.clear_console()
             print("Obrigado por utilizar o nosso sistema.")
             exit(0)
 
         else:
-            print("Opção incorreta.")
-            exit(1)
+            print("Opção incorreta. Tente novamente.")
+            exit(0)
 
 if __name__ == "__main__":
     run()

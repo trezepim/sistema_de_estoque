@@ -1,97 +1,137 @@
-# Exemplo de Sistema em Python fazendo CRUD no Oracle
+# Sistema de Controle de Estoque com Python e Oracle
 
-Esse sistema de exemplo é composto por um conjunto de tabelas que representam pedidos de vendas, contendo tabelas como: clientes, fornecedores, produtos, pedidos e itens de pedido.
+Sistema para gerenciamento de estoque.  
+O sistema permite o controle eficiente de produtos, gestão de pedidos de compra e venda, e geração de relatórios gerenciais para tomada de decisão.
 
-O sistema exige que as tabelas existam, então basta executar o script Python a seguir para criação das tabelas e preenchimento de dados de exemplos:
+## Funcionalidades Principais
+
+- **Gestão de Produtos**
+  * Cadastro e atualização de produtos
+  * Controle de estoque
+  * Preços e informações detalhadas
+
+- **Gestão de Clientes e Fornecedores**
+  * Cadastro completo de clientes
+  * Gestão de fornecedores
+  * Histórico de transações
+
+- **Controle de Pedidos**
+  * Registro de pedidos de compra e venda
+  * Múltiplos itens por pedido
+  * Acompanhamento de status
+
+- **Relatórios Gerenciais**
+  * Relatórios de estoque
+  * Análise de pedidos por fornecedor
+  * Histórico de movimentações
+  * Relatórios de clientes e fornecedores
+
+## Início Rápido
+
+1. Criar as tabelas e dados iniciais:
 ```shell
-~$ python create_tables_and_records.py
+python src/create_tables_and_records.py
 ```
 
-Para executar o sistema basta executar o script Python a seguir:
+2. Executar o sistema:
 ```shell
-~$ python principal.py
+python src/principal.py
 ```
 
-Para que possa testar as conexões com o banco de dados Oracle e o módulo Conexion desenvolvido para esse projeto, basta executar o script Python a seguir:
+3. Testar a conexão com o banco de dados:
 ```shell
-~$ python test.py
+python src/test.py
 ```
 
 ## Organização
-- [diagrams](diagrams): Nesse diretório está o [diagrama relacional](diagrams/DIAGRAMA_RELACIONAL_PEDIDOS.pdf) (lógico) do sistema.
-    * O sistema possui cinco entidades: PRODUTOS, CLIENTES, FORNECEDORES, PEDIDOS e ITENS_PEDIDO
-- [sql](sql): Nesse diretório estão os scripts para criação das tabelas e inserção de dados fictícios para testes do sistema
-    * Certifique-se de que o usuário do banco possui todos os privilégios antes de executar os scripts de criação, caso ocorra erro, execute o comando a seguir com o superusuário via SQL Developer: `GRANT ALL PRIVILEGES TO LABDATABASE;`
-    * [create_tables_pedidos.sql](sql/create_tables_pedidos.sql): script responsável pela criação das tabelas, relacionamentos e criação de permissão no esquema LabDatabase.
-    * [inserting_samples_records.sql](sql/inserting_samples_records.sql): script responsável pela inserção dos registros fictícios para testes do sistema.
-    * [inserting_samples_related_records.sql](sql/inserting_samples_related_records.sql): script responsável pela inserção dos registros fictícios de pedidos e itens de pedidos para testes do sistema utilizando blocos PL/SQL.
-- [src](src): Nesse diretório estão os scripts do sistema
-    * [conexion](src/conexion): Nesse repositório encontra-se o [módulo de conexão com o banco de dados Oracle](src/conexion/oracle_queries.py). Esse módulo possui algumas funcionalidades úteis para execução de instruções DML e DDL, sendo possível obter JSON, Matriz e Pandas DataFrame.
-      - Exemplo de utilização para consultas simples:
+- [diagrams](diagrams): Nesse diretório está o [diagrama relacional](diagrams/sistema_de_estoque.mmd) (lógico) do sistema de controle de estoque.
+    * O sistema gerencia cinco entidades principais:
+        * PRODUTOS: Cadastro e controle de produtos em estoque
+        * CLIENTES: Gerenciamento de clientes que realizam pedidos
+        * FORNECEDORES: Cadastro de fornecedores que abastecem o estoque
+        * PEDIDOS: Registro de transações de compra/venda
+        * ITENS_PEDIDO: Detalhamento dos produtos em cada pedido com quantidades
 
-        ```python
-        def listar_clientes(self, oracle:OracleQueries, need_connect:bool=False):
-            query = """
-                    select c.cpf
-                        , c.nome 
-                    from clientes c
-                    order by c.nome
-                    """
-            if need_connect:
-                oracle.connect()
-            print(oracle.sqlToDataFrame(query))
-        ```
-      - Exemplo de utilização para alteração de registros
+- [sql](sql): Scripts SQL para configuração e população inicial do banco de dados
+    * [create_tables_pedidos.sql](sql/create_tables_pedidos.sql): Cria a estrutura de tabelas com relacionamentos para controle de estoque
+    * [inserting_samples_records.sql](sql/inserting_samples_records.sql): Insere dados de exemplo de produtos, clientes e fornecedores
+    * [inserting_samples_related_records.sql](sql/inserting_samples_related_records.sql): Insere dados de exemplo de pedidos e movimentações de estoque
 
-        ```python
-        from conexion.oracle_queries import OracleQueries
-        def inserir_cliente(self) -> Cliente:
-            # Cria uma nova conexão com o banco que permite alteração
-            oracle = OracleQueries(can_write=True)
-            oracle.connect()
+- [src](src): Código-fonte do sistema, organizado nos seguintes módulos:
+    * [conexion](src/conexion): Módulo de conexão com o banco Oracle
+        * [oracle_queries.py](src/conexion/oracle_queries.py): Gerencia conexões e queries
+        * [passphrase](src/conexion/passphrase): Armazena credenciais de acesso
 
-            # Solicita ao usuario o novo CPF
-            cpf = input("CPF (Novo): ")
+    * [controller](src/controller): Classes controladoras para gerenciamento de entidades
+        * [controller_produto.py](src/controller/controller_produto.py): Gerencia produtos (CRUD)
+        * [controller_cliente.py](src/controller/controller_cliente.py): Gerencia clientes (CRUD)
+        * [controller_fornecedor.py](src/controller/controller_fornecedor.py): Gerencia fornecedores (CRUD)
+        * [controller_pedido.py](src/controller/controller_pedido.py): Gerencia pedidos (CRUD)
+        * [controller_item_pedido.py](src/controller/controller_item_pedido.py): Gerencia itens de pedido (CRUD)
 
-            if self.verifica_existencia_cliente(oracle, cpf):
-                # Solicita ao usuario o novo nome
-                nome = input("Nome (Novo): ")
-                # Insere e persiste o novo cliente
-                oracle.write(f"insert into clientes values ('{cpf}', '{nome}')")
-                # Recupera os dados do novo cliente criado transformando em um DataFrame
-                df_cliente = oracle.sqlToDataFrame(f"select cpf, nome from clientes where cpf = '{cpf}'")
-                # Cria um novo objeto Cliente
-                novo_cliente = Cliente(df_cliente.cpf.values[0], df_cliente.nome.values[0])
-                # Exibe os atributos do novo cliente
-                print(novo_cliente.to_string())
-                # Retorna o objeto novo_cliente para utilização posterior, caso necessário
-                return novo_cliente
-            else:
-                print(f"O CPF {cpf} já está cadastrado.")
-                return None
-        ```
-      - Outros exemplos: [test.py](src/test.py)
-      - Caso esteja utilizando na máquina virtual antiga, você precisará alterar o método connect de:
-          ```python
-          self.conn = cx_Oracle.connect(user=self.user,
-                                  password=self.passwd,
-                                  dsn=self.connectionString()
-                                  )
-          ```
-        Para:
-          ```python
-          self.conn = cx_Oracle.connect(user=self.user,
-                                  password=self.passwd,
-                                  dsn=self.connectionString(in_container=True)
-                                  )
-          ```
-    * [controller](src/controller/): Nesse diretório encontram-sem as classes controladoras, responsáveis por realizar inserção, alteração e exclusão dos registros das tabelas.
-    * [model](src/model/): Nesse diretório encontram-ser as classes das entidades descritas no [diagrama relacional](diagrams/DIAGRAMA_RELACIONAL_PEDIDOS.pdf)
-    * [reports](src/reports/) Nesse diretório encontra-se a [classe](src/reports/relatorios.py) responsável por gerar todos os relatórios do sistema
-    * [sql](src/sql/): Nesse diretório encontram-se os scripts utilizados para geração dos relatórios a partir da [classe relatorios](src/reports/relatorios.py)
-    * [utils](src/utils/): Nesse diretório encontram-se scripts de [configuração](src/utils/config.py) e automatização da [tela de informações iniciais](src/utils/splash_screen.py)
-    * [create_tables_and_records.py](src/create_tables_and_records.py): Script responsável por criar as tabelas e registros fictícios. Esse script deve ser executado antes do script [principal.py](src/principal.py) para gerar as tabelas, caso não execute os scripts diretamente no SQL Developer ou em alguma outra IDE de acesso ao Banco de Dados.
-    * [principal.py](src/principal.py): Script responsável por ser a interface entre o usuário e os módulos de acesso ao Banco de Dados. Deve ser executado após a criação das tabelas.
+    * [model](src/model): Classes que representam as entidades do sistema
+        * [produtos.py](src/model/produtos.py): Modelo de produtos com atributos e métodos
+        * [clientes.py](src/model/clientes.py): Modelo de clientes
+        * [fornecedores.py](src/model/fornecedores.py): Modelo de fornecedores
+        * [pedidos.py](src/model/pedidos.py): Modelo de pedidos
+        * [itens_pedido.py](src/model/itens_pedido.py): Modelo de itens de pedido
+
+    * [reports](src/reports): Módulo de relatórios
+        * [relatorios.py](src/reports/relatorios.py): Gera relatórios gerenciais:
+            * Relatório de Pedidos por Fornecedor
+            * Relatório de Pedidos
+            * Relatório de Produtos em Estoque
+            * Relatório de Clientes
+            * Relatório de Fornecedores
+            * Relatório de Itens de Pedidos
+
+    * [utils](src/utils): Módulos utilitários
+        * [config.py](src/utils/config.py): Configurações e menus do sistema
+        * [splash_screen.py](src/utils/splash_screen.py): Interface inicial
+
+    * Arquivos principais:
+        * [create_tables_and_records.py](src/create_tables_and_records.py): Script de inicialização do banco
+        * [principal.py](src/principal.py): Ponto de entrada do sistema, integra todos os módulos
+## Exemplos de Código
+
+### Registro de Novo Produto (src/controller/controller_produto.py)
+```python
+def inserir_produto(self) -> Produto:
+    oracle = OracleQueries()
+    cursor = oracle.connect()
+    output_value = cursor.var(int)
+
+    descricao_novo_produto = input("Descrição (Novo): ")
+
+    data = dict(codigo=output_value, descricao_produto=descricao_novo_produto)
+    cursor.execute("""
+    begin
+        :codigo := PRODUTOS_CODIGO_PRODUTO_SEQ.NEXTVAL;
+        insert into produtos values(:codigo, :descricao_produto);
+    end;
+    """, data)
+    codigo_produto = output_value.getvalue()
+    oracle.conn.commit()
+    df_produto = oracle.sqlToDataFrame(f"select codigo_produto, descricao_produto from produtos where codigo_produto = {codigo_produto}")
+    novo_produto = Produto(df_produto.codigo_produto.values[0], df_produto.descricao_produto.values[0])
+    return novo_produto
+
+```
+
+### Verificação de Produto (src/controller/controller_produto.py)
+```python
+def verifica_existencia_produto(self, oracle:OracleQueries, codigo:int=None) -> bool:
+    df_produto = oracle.sqlToDataFrame(f"select codigo_produto, descricao_produto from produtos where codigo_produto = {codigo}")
+    return df_produto.empty
+```
+
+### Configuração do Oracle em Container
+Se estiver usando Docker ou máquina virtual, ajuste o método connect em `src/conexion/oracle_queries.py`:
+```python
+self.conn = cx_Oracle.connect(user=self.user,
+                          password=self.passwd,
+                          dsn=self.connectionString(in_container=True)
+                          )
 
 ### Bibliotecas Utilizadas
 - [requirements.txt](src/requirements.txt): `pip install -r requirements.txt`
@@ -124,6 +164,83 @@ Para que possa testar as conexões com o banco de dados Oracle e o módulo Conex
   export PATH
   ```
 
-## Contato
-- [LinkedIn](https://linkedin.com/in/howardroatti)
-- [E-Mail](mailto:howardcruzroatti@gmail.com)
+## Passo a Passo para Executar o Projeto
+
+### 1. Pré-requisitos
+- Oracle Database instalado (ou container Docker com Oracle)
+- Python instalado
+- Git (para clonar o repositório)
+
+### 2. Configuração do Ambiente
+1. Clone o repositório:
+   ```shell
+   git clone https://github.com/mrkn03/sistema_de_estoque.git
+   cd sistema_de_estoque
+   ```
+
+2. Crie e ative um ambiente virtual Python:
+   ```shell
+   python -m venv .venv
+   source .venv/bin/activate  # Linux/Mac
+   # ou
+   .venv\Scripts\activate  # Windows
+   ```
+
+3. Instale as dependências:
+   ```shell
+   pip install -r src/requirements.txt
+   ```
+
+### 3. Configuração do Oracle InstantClient
+1. Baixe o Oracle InstantClient compatível com sua versão do Oracle
+2. Para distribuições Linux baseadas em Debian, converta o pacote RPM:
+   ```shell
+   sudo alien --scripts oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
+   ```
+3. Configure os diretórios:
+   ```shell
+   sudo mkdir -p /usr/local/oracle/instantclient_18_5
+   sudo cp -r /usr/lib/oracle/21 /usr/local/oracle/instantclient_18_5/lib
+   sudo cp -r /usr/share/oracle/21 /usr/local/oracle/instantclient_18_5/share
+   ```
+4. Configure as variáveis de ambiente no ~/.bash_profile:
+   ```shell
+   export ORACLE_HOME=/usr/local/oracle/instantclient_18_5/lib/oracle/21/client64
+   export LD_LIBRARY_PATH=$ORACLE_HOME/lib
+   export PATH=$PATH:$ORACLE_HOME/bin
+   export PATH
+   ```
+5. Aplique as alterações:
+   ```shell
+   source ~/.bash_profile
+   ```
+
+### 4. Configuração do Banco de Dados Oracle
+1. Inicie o servidor Oracle (ou container Docker)
+2. Acesse o SQL*Plus como administrador:
+   ```shell
+   sqlplus / as sysdba
+   ```
+3. Configure o usuário e privilégios:
+   ```sql
+   ALTER SESSION SET CONTAINER = XEPDB1;
+   ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+   GRANT ALL PRIVILEGES TO labdatabase;
+   ALTER USER labdatabase IDENTIFIED BY "labDatabase2022";
+   ```
+
+### 5. Configuração do Projeto
+1. Se estiver usando Docker ou máquina virtual, ajuste o arquivo `src/conexion/oracle_queries.py` para usar `in_container=True`
+2. Verifique se o arquivo de autenticação está correto em `src/conexion/passphrase/authentication.oracle`
+   - Deve conter: `labdatabase,labDatabase2022`
+
+### 6. Execução do Sistema
+1. Crie as tabelas e dados de exemplo:
+   ```shell
+   cd src
+   python create_tables_and_records.py
+   ```
+2. Execute o programa principal:
+   ```shell
+   python principal.py
+   ```

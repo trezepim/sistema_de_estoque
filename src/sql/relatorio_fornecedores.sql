@@ -1,5 +1,5 @@
-select f.cnpj
-       , f.razao_social
-       , f.nome_fantasia
-  from fornecedores f
- order by f.nome_fantasia
+select f.cnpj as "CNPJ",
+       f.razao_social as "Razão Social",
+       f.nome_fantasia as "Nome Fantasia"
+from fornecedores f
+order by f.nome_fantasia

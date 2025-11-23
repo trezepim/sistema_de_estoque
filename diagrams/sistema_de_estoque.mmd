@@ -1,0 +1,47 @@
+erDiagram
+    PRODUTOS ||--o{ MOVIMENTACOES : contem
+    FORNECEDORES ||--o{ MOVIMENTACOES : fornece
+    CATEGORIAS ||--o{ PRODUTOS : classifica
+    LOCALIZACOES ||--o{ PRODUTOS : armazena
+
+    PRODUTOS {
+        int CODIGO_PRODUTO
+        string DESCRICAO_PRODUTO
+        int QUANTIDADE_ATUAL
+        int QUANTIDADE_MINIMA
+        int QUANTIDADE_MAXIMA
+        float PRECO_CUSTO
+        float PRECO_VENDA
+        int CODIGO_CATEGORIA
+        int CODIGO_LOCALIZACAO
+        date DATA_ULTIMA_MOVIMENTACAO
+    }
+
+    MOVIMENTACOES {
+        int CODIGO_MOVIMENTACAO
+        int CODIGO_PRODUTO
+        string TIPO_MOVIMENTACAO
+        int QUANTIDADE
+        date DATA_MOVIMENTACAO
+        string CNPJ_FORNECEDOR
+        string MOTIVO
+        string NUMERO_NOTA
+    }
+
+    FORNECEDORES {
+        string CNPJ_FORNECEDOR
+        string RAZAO_SOCIAL
+        string NOME_FANTASIA
+    }
+
+    CATEGORIAS {
+        int CODIGO_CATEGORIA
+        string NOME_CATEGORIA
+        string DESCRICAO
+    }
+
+    LOCALIZACOES {
+        int CODIGO_LOCALIZACAO
+        string NOME_LOCALIZACAO
+        string DESCRICAO
+    }

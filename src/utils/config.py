@@ -3,25 +3,33 @@ MENU_PRINCIPAL = """Menu Principal
 2 - Inserir Registros
 3 - Atualizar Registros
 4 - Remover Registros
-5 - Sair
+5 - Movimentar Estoque
+6 - Sair
 """
 
 MENU_RELATORIOS = """Relatórios
-1 - Relatório de Pedidos por Fornecedores
-2 - Relatório de Pedidos
-3 - Relatório de Produtos
-4 - Relatório de Clientes
-5 - Relatório de Fornecedores
-6 - Relatório de Itens de Pedidos
+1 - Produtos Abaixo do Mínimo
+2 - Produtos por Categoria
+3 - Movimentações por Período
+4 - Posição Atual do Estoque
+5 - Relatório de Produtos
+6 - Relatório de Fornecedores
 0 - Sair
 """
 
 MENU_ENTIDADES = """Entidades
 1 - PRODUTOS
-2 - CLIENTES
+2 - CATEGORIAS
 3 - FORNECEDORES
-4 - PEDIDOS
-5 - ITENS DE PEDIDOS
+4 - LOCALIZAÇÕES
+5 - MOVIMENTAÇÕES
+0 - Voltar
+"""
+
+MENU_MOVIMENTACAO = """Movimentação de Estoque
+1 - Registrar Entrada
+2 - Registrar Saída
+0 - Sair
 """
 
 # Consulta de contagem de registros por tabela
