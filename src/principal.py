@@ -41,7 +41,16 @@ def inserir(opcao_inserir:int=0):
     elif opcao_inserir == 4:
         nova_localizacao = ctrl_localizacao.inserir_localizacao()
     elif opcao_inserir == 5:
-        nova_movimentacao = ctrl_movimentacao.inserir_movimentacao()
+        print("1 - Registrar Entrada")
+        print("2 - Registrar Saída")
+        escolha = int(input("Escolha uma opção: "))
+        if escolha == 1:
+            nova_movimentacao = ctrl_movimentacao.registrar_entrada()
+        elif escolha == 2:
+            nova_movimentacao = ctrl_movimentacao.registrar_saida()
+        else:
+            print("Opção inválida.")
+            nova_movimentacao = None
 
 def atualizar(opcao_atualizar:int=0):
     """Função para atualizar registros existentes no MongoDB"""

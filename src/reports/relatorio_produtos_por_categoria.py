@@ -1,8 +1,11 @@
 from conexion.mongodb_connection import MongoDBConnection
+from bson import ObjectId
 
 def relatorio_produtos_por_categoria():
+    # Cria conexão com o banco
     db = MongoDBConnection().connect()
 
+    # Pipeline de agregação
     pipeline = [
         {
             "$lookup": {
@@ -45,10 +48,12 @@ def relatorio_produtos_por_categoria():
         }
     ]
 
+    # Executa agregação
     resultados = list(db.produtos.aggregate(pipeline))
 
+    # Exibe relatório
     print("\nRELATÓRIO DE PRODUTOS POR CATEGORIA")
-    print("-" * 60)
+    print("-" * 80)
 
     for r in resultados:
         print(
@@ -57,6 +62,10 @@ def relatorio_produtos_por_categoria():
             f"Localização: {r['localizacao']} | Preço: {r['preco_venda']}"
         )
 
-    print("-" * 60)
+    print("-" * 80)
     print(f"Total de registros: {len(resultados)}")
+    print()
 
+# Se quiser testar rapidamente
+if __name__ == "__main__":
+    relatorio_produtos_por_categoria()
